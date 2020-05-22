@@ -5,31 +5,15 @@ import java.util.*;
 public class FindBusiest {
 
     public static List<Entries> entriesList() {
-      /*  Entries entries_1 = new Entries(4, 1, "enter");
-        Entries entries_2 = new Entries(2, 2, "exit");
-        Entries entries_3 = new Entries(6, 2, "enter");
-        Entries entries_4 = new Entries(8, 1, "enter");
-        Entries entries_5 = new Entries(5, 5, "exit");
-        Entries entries_6 = new Entries(7, 1, "enter");
-        Entries entries_7 = new Entries(3, 4, "enter");
-        Entries entries_8 = new Entries(1, 2, "enter");
-        Entries entries_9 = new Entries(9, 4, "exit");*/
-
-       /* Entries entries_1 = new Entries(1, 3, "enter");
-        Entries entries_2 = new Entries(2, 3, "exit");
-        Entries entries_3 = new Entries(3, 2, "enter");
+        Entries entries_1 = new Entries(1, 12, "enter");
+        Entries entries_2 = new Entries(2, 12, "exit");
+        Entries entries_3 = new Entries(3, 4, "enter");
         Entries entries_4 = new Entries(4, 1, "exit");
-        Entries entries_5 = new Entries(5, 3, "enter");
-        Entries entries_6 = new Entries(6, 4, "exit");*/
+        Entries entries_5 = new Entries(5, 1, "exit");
+        Entries entries_6 = new Entries(6, 13, "enter");
+        Entries entries_7 = new Entries(7, 15, "exit");
 
-        Entries entries_1 = new Entries(1, 10, "enter");
-        Entries entries_2 = new Entries(2, 10, "exit");
-        Entries entries_3 = new Entries(3, 4, "exit");
-        Entries entries_4 = new Entries(4, 1, "enter");
-        Entries entries_5 = new Entries(5, 3, "exit");
-
-
-        return Arrays.asList(entries_1, entries_2, entries_3, entries_4, entries_5);
+        return Arrays.asList(entries_1, entries_2, entries_3, entries_4, entries_5, entries_6, entries_7);
     }
 
     public static void main(String[] arg) {
@@ -41,35 +25,24 @@ public class FindBusiest {
 
     public static String findBusiestPeriod(List<Entries> entries) {
         sortByTimestamp(entries);
-
-        int countPeople = 0;
-
-        int peekPeople = Integer.MIN_VALUE;
-
-        int start = 0;
-        int end = 0;
-        int currentIndex = 0;
+        int peopleCounter = 0;
+        int peakFound = Integer.MIN_VALUE;
 
         for (Entries oneEntry : entries) {
+            peopleCounter += oneEntry.type.equals("enter") ? oneEntry.count : oneEntry.count * -1;
 
-            if (oneEntry.type.equals("exit")) {
-                countPeople -= oneEntry.count;
-            } else {
-                countPeople += oneEntry.count;
+            if (peopleCounter > peakFound) {
+                peakFound = peopleCounter;
+                Finder.start = Finder.nextStart;
+                Finder.end = Finder.currentIndex;
             }
-
-            if (countPeople == 0 && oneEntry.count > peekPeople) {
-                peekPeople = oneEntry.count;
-                start = entries.get(end).type.equals("enter") ? end : end + 1;
-                end = currentIndex ;
-
+            if (peopleCounter == 0) {
+                Finder.nextStart = Finder.currentIndex + 1;
             }
-            currentIndex++;
-
+            Finder.currentIndex++;
         }
 
-        return //start == 0 ? entries.get(start).timestamp + "-" + entries.get(start).timestamp :
-                entries.get(start).timestamp + "-" + entries.get(end-1).timestamp;
+        return entries.get(Finder.start).timestamp + "-" + entries.get(Finder.end).timestamp;
     }
 
     public static void sortByTimestamp(List<Entries> entries) {
@@ -80,6 +53,14 @@ public class FindBusiest {
         });
     }
 
+
+    public static class Finder {
+        public static int start = 0;
+        public static int end = 0;
+        public static int nextStart = 0;
+        public static int currentIndex = 0;
+
+    }
 
     public static class Entries {
         public int timestamp;
