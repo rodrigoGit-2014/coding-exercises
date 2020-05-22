@@ -14,6 +14,13 @@ public class FindBusiest {
         Entries entries_7 = new Entries(3, 4, "enter");
         Entries entries_8 = new Entries(1, 2, "enter");
         Entries entries_9 = new Entries(9, 4, "exit");
+        /*Entries entries_1 = new Entries(1, 3, "enter");
+        Entries entries_2 = new Entries(2, 3, "exit");
+        Entries entries_3 = new Entries(3, 2, "enter");
+        Entries entries_4 = new Entries(4, 1, "exit");
+        Entries entries_5 = new Entries(5, 3, "enter");
+        Entries entries_6 = new Entries(6, 4, "exit");*/
+
         return Arrays.asList(entries_1, entries_2, entries_3, entries_4, entries_5,
                 entries_6, entries_7, entries_8, entries_9);
     }
@@ -22,6 +29,7 @@ public class FindBusiest {
         List<Entries> entries = entriesList();
 
         String period = findBusiestPeriod(entries);
+        System.out.println(period);
     }
 
     public static String findBusiestPeriod(List<Entries> entries) {
@@ -32,7 +40,7 @@ public class FindBusiest {
         int peekPeople = Integer.MIN_VALUE;
 
         int start = 0;
-        int end = -1;
+        int end = 0;
         int currentIndex = 0;
 
         for (Entries oneEntry : entries) {
@@ -45,7 +53,7 @@ public class FindBusiest {
 
             if (countPeople == 0 && oneEntry.count > peekPeople) {
                 peekPeople = oneEntry.count;
-                start = end + 1;
+                start = end;
                 end = currentIndex;
 
             }
@@ -53,7 +61,8 @@ public class FindBusiest {
 
         }
 
-        return start + "-" + end;
+        return start == 0 ? entries.get(start).timestamp + "-" + entries.get(start).timestamp :
+                entries.get(start + 1).timestamp + "-" + entries.get(end - 1).timestamp;
     }
 
     public static void sortByTimestamp(List<Entries> entries) {
